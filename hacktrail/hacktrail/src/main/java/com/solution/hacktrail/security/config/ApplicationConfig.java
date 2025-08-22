@@ -102,42 +102,51 @@ public class ApplicationConfig {
 //            }
 //        };
 //    }
+@Bean
+public CommandLineRunner initUsers(UserRepository userRepository,
+                                   RoleRepository roleRepository,
+                                   PasswordEncoder passwordEncoder) {
+    return args -> {
 
-//    @Bean
-//    public CommandLineRunner initUsers(UserRepository userRepository,
-//                                       RoleRepository roleRepository,
-//                                       PasswordEncoder passwordEncoder) {
-//        return args -> {
-//            userRepository.deleteAll(); // optional
-//
-//            // Ensure roles are saved first (if not already there)
-//            roleRepository.save(new Role(AppRole.ROLE_USER));
-//            roleRepository.save(new Role(AppRole.ROLE_ADMIN));
-//            roleRepository.save(new Role(AppRole.ROLE_SELLER));
-//
-//            // ✅ Fetch managed role entities from DB
-//            Role userRole = roleRepository.findByRoleName(AppRole.ROLE_USER).orElseThrow();
-//            Role adminRole = roleRepository.findByRoleName(AppRole.ROLE_ADMIN).orElseThrow();
-//
-//            // Create user1
-//            User user1 = new User();
-//            user1.setUserName("john");
-//            user1.setEmail("john@example.com");
-//            user1.setPassword(passwordEncoder.encode("userpass"));
-//            user1.setRoles(new HashSet<>(List.of(userRole)));
-//
-//            // Create user2
-//            User user2 = new User();
-//            user2.setUserName("admin");
-//            user2.setEmail("admin@example.com");
-//            user2.setPassword(passwordEncoder.encode("adminpass"));
-//            user2.setRoles(new HashSet<>(List.of(adminRole)));
-//
-//            userRepository.saveAll(List.of(user1, user2));
-//
-//            System.out.println("✅ Sample users initialized in MySQL database.");
-//        };
-//    }
+        // ✅ Ensure roles exist (insert only if missing)
+        if (roleRepository.findByRoleName(AppRole.ROLE_USER).isEmpty()) {
+            roleRepository.save(new Role(AppRole.ROLE_USER));
+        }
+        if (roleRepository.findByRoleName(AppRole.ROLE_ADMIN).isEmpty()) {
+            roleRepository.save(new Role(AppRole.ROLE_ADMIN));
+        }
+        if (roleRepository.findByRoleName(AppRole.ROLE_SELLER).isEmpty()) {
+            roleRepository.save(new Role(AppRole.ROLE_SELLER));
+        }
+
+        // ✅ Fetch managed role entities from DB
+        Role userRole = roleRepository.findByRoleName(AppRole.ROLE_USER).orElseThrow();
+        Role adminRole = roleRepository.findByRoleName(AppRole.ROLE_ADMIN).orElseThrow();
+
+        // ✅ Create john if not already exists
+        if (userRepository.findByEmail("john@example.com").isEmpty()) {
+            User user1 = new User();
+            user1.setUserName("john");
+            user1.setEmail("john@example.com");
+            user1.setPassword(passwordEncoder.encode("userpass"));
+            user1.setRoles(new HashSet<>(List.of(userRole)));
+            userRepository.save(user1);
+        }
+
+        // ✅ Create admin if not already exists
+        if (userRepository.findByEmail("admin@example.com").isEmpty()) {
+            User user2 = new User();
+            user2.setUserName("admin");
+            user2.setEmail("admin@example.com");
+            user2.setPassword(passwordEncoder.encode("adminpass"));
+            user2.setRoles(new HashSet<>(List.of(adminRole)));
+            userRepository.save(user2);
+        }
+
+        System.out.println("✅ Default roles and users initialized (if missing).");
+    };
+}
+
 
 }
 

@@ -25,8 +25,7 @@ public class JwtService {
 
     private static final String SECRET_KEY = "Z3s8D9fLrV1qW5mNtJxB7eKwY6uGh0PaMzRdTiLkVpSnCoXvUrEbHaGyNzMqJcKtZpWlXvOmCrYfBvTyLdRuGnHpWsKeJdXlNqMqTsBpErYwUeIrOpNvBsXqAjFmDcHsLkJrVsZxMfEdBpUqYrTgVnZmWxAoEuJrPtHgYdXoClMrNfBqStUkXiVwJzQtGkMnBjRpTwLuEwFoGpTxMnYcZoHeLdKsWqFxNyKrLzAbXe";
 
-    @Value("${spring.hacktrail.app.jwtCookieName}")
-    private String jwtCookie;
+
 
     public String extractUserName(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -96,7 +95,7 @@ public class JwtService {
 
     //cookie based impls
     public String getJwtFromCookie(HttpServletRequest request) {
-        Cookie cookie = WebUtils.getCookie(request, jwtCookie);
+        Cookie cookie = WebUtils.getCookie(request, "hacktrailJWT");
         if(cookie != null) {
             return cookie.getValue();
         }else
@@ -108,7 +107,7 @@ public class JwtService {
 
     public ResponseCookie generateJwtCookie(UserDetails userDetails) {
         String token = generateToken(userDetails);
-        return ResponseCookie.from("springBootEcom", token)
+        return ResponseCookie.from("hacktrailJWT", token)
                 .path("/api")
                 .maxAge(24 * 60 * 60)
                 .httpOnly(true)       // keep token hidden from JS
@@ -120,7 +119,7 @@ public class JwtService {
 
     public ResponseCookie getClearJwtCoockie(){
 
-        ResponseCookie cookie = ResponseCookie.from(jwtCookie,null)
+        ResponseCookie cookie = ResponseCookie.from("hacktrailJWT",null)
                 .path("/api")
                 .build();
 
