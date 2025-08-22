@@ -2,6 +2,7 @@ package com.solution.hacktrail.controller;
 
 import com.solution.hacktrail.payload.AiPromptDTO;
 import com.solution.hacktrail.service.ChatService;
+import com.solution.hacktrail.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ public class ChatController {
 
     @PostMapping("/getAnswer")
     public ResponseEntity<String> chat(@RequestBody AiPromptDTO aiPromptDTO) {
+
         String response = chatService.textGenerate(aiPromptDTO);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
