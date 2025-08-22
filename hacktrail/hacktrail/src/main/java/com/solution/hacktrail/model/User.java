@@ -38,6 +38,10 @@ public class User {
     @NotEmpty
     private String password;
 
+
+    private String tgNumber;
+
+
     @ToString.Exclude
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",

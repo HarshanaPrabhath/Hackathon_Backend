@@ -27,6 +27,9 @@ public class RegisterRequest {
 
     private Set<String> role;
 
+
+    private String tgNumber;
+
     @NotBlank
     @Size(min = 6, max = 40)
     private String password;

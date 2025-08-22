@@ -128,6 +128,7 @@ public CommandLineRunner initUsers(UserRepository userRepository,
             User user1 = new User();
             user1.setUserName("john");
             user1.setEmail("john@example.com");
+            user1.setTgNumber("Tg/2023/1753");
             user1.setPassword(passwordEncoder.encode("userpass"));
             user1.setRoles(new HashSet<>(List.of(userRole)));
             userRepository.save(user1);
@@ -138,6 +139,7 @@ public CommandLineRunner initUsers(UserRepository userRepository,
             User user2 = new User();
             user2.setUserName("admin");
             user2.setEmail("admin@example.com");
+            user2.setTgNumber("Tg/2023/1753");
             user2.setPassword(passwordEncoder.encode("adminpass"));
             user2.setRoles(new HashSet<>(List.of(adminRole)));
             userRepository.save(user2);
